@@ -1,0 +1,28 @@
+# ENVR7 Python Dependencies
+# MLOps & Data Flow
+mlflow==2.8.0
+prefect==2.14.0
+apache-airflow==2.7.0
+kubeflow==1.8.0
+
+# Security Tools
+snyk==0.9.0
+trivy-sdk==0.5.0
+
+# Monitoring
+prometheus-client==0.17.0
+grafana-api==1.0.3
+elasticsearch==8.11.0
+
+# Utilities
+pandas==2.1.0
+numpy==1.24.0
+scikit-learn==1.3.0
+docker==6.1.0
+kubernetes==26.1.0
+
+# Testing
+pytest==7.4.0
+pytest-cov==4.1.0
+bandit==1.7.5
+safety==2.3.0
