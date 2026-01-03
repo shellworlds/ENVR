@@ -1,33 +1,35 @@
-# Quantum Computing Environment Showcase
+# ENVR: Enterprise Quantum Computing Environment
 
-A comprehensive quantum computing project using Qiskit on Ubuntu/Linux.
+A comprehensive quantum computing development environment with integrated code quality tools.
 
 ## Features
-- Quantum algorithm implementations
-- Quantum machine learning examples
-- Quantum chemistry simulations
-- Visualization tools
-- Performance benchmarking
+- Quantum algorithms with Qiskit
+- Full-stack code quality toolchain
+- CI/CD integration
+- Multi-language support
 
-## Prerequisites
-- Python 3.8+
-- Qiskit
-- Ubuntu/Linux
+## Tools Showcased
+- **SonarQube**: Static analysis with code smell detection
+- **ESLint/Prettier**: JavaScript/TypeScript linting and formatting
+- **Black**: Python code formatting
+- **JSCodeshift**: Large-scale JavaScript refactoring
+- **Roslynator**: C# refactoring tools
+- **ReSharper**: .NET productivity tool
+- **Coverity**: Security and bug detection
 
 ## Installation
 ```bash
 pip install -r requirements.txt
-```
+Project Structure
+src/quantum_algorithms/ - Quantum algorithm implementations
 
-## Usage
-See individual module documentation for specific use cases.
+src/quantum_applications/ - Practical quantum applications
 
-## Project Structure
-- `src/quantum_algorithms/` - Core quantum algorithms
-- `src/quantum_applications/` - Practical applications
-- `notebooks/` - Jupyter notebooks with examples
-- `tests/` - Unit tests
-- `docs/` - Documentation
+tests/ - Test suites
 
-## Branch: ENVR1
-This is the ENVR1 branch containing initial project setup.
+notebooks/ - Jupyter notebooks
+
+docs/ - Documentation
+
+License
+MIT
