@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quantum-llm-deployment
+  namespace: quantum-ai
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: quantum-llm
+  template:
+    metadata:
+      labels:
+        app: quantum-llm
+    spec:
+      containers:
+      - name: quantum-llm
+        image: envr4-quantum-llm:latest
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            memory: "16Gi"
+            cpu: "4"
+            nvidia.com/gpu: 1
+          limits:
+            memory: "32Gi"
+            cpu: "8"
+            nvidia.com/gpu: 1
+        env:
+        - name: MODEL_PATH
+          value: "/models/llama-2-7b"
+        - name: QUANTUM_ENHANCEMENT
+          value: "true"
+        volumeMounts:
+        - name: model-storage
+          mountPath: /models
+        - name: config
+          mountPath: /app/config
+      volumes:
+      - name: model-storage
+        persistentVolumeClaim:
+          claimName: model-pvc
+      - name: config
+        configMap:
+          name: quantum-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: quantum-llm-service
+  namespace: quantum-ai
+spec:
+  selector:
+    app: quantum-llm
+  ports:
+  - port: 80
+    targetPort: 8000
+  type: LoadBalancer
