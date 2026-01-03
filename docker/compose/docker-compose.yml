@@ -1,0 +1,242 @@
+version: '3.8'
+
+services:
+  # AI/ML Services
+  quantum-llm:
+    build: ../..
+    image: envr4-quantum-llm:latest
+    container_name: quantum-llama
+    ports:
+      - "8000:8000"
+    environment:
+      - MODEL_PATH=/models/llama-2-7b
+      - QUANTUM_ENHANCEMENT=true
+      - CUDA_VISIBLE_DEVICES=0
+    volumes:
+      - ./models:/models
+      - ./logs:/app/logs
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    command: ["python", "ai-ml/llama/quantum_llm.py"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ../..
+      dockerfile: Dockerfile.api
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - LLM_SERVICE=quantum-llm:8000
+      - REDIS_URL=redis:6379
+      - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      - quantum-llm
+      - redis
+      - postgres
+    command: ["node", "api-gateway/server.js"]
+
+  # React Frontend
+  react-frontend:
+    build:
+      context: ../..
+      dockerfile: Dockerfile.react
+    container_name: react-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://api-gateway:8080
+      - REACT_APP_WS_URL=ws://api-gateway:8080/ws
+    depends_on:
+      - api-gateway
+    volumes:
+      - ./frontend:/app/src
+      - /app/node_modules
+    command: ["npm", "start"]
+
+  # Next.js SSR
+  next-ssr:
+    build:
+      context: ../..
+      dockerfile: Dockerfile.next
+    container_name: next-ssr
+    ports:
+      - "3001:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://api-gateway:8080
+      - NODE_ENV=production
+    depends_on:
+      - api-gateway
+
+  # Vite Dev Server
+  vite-dev:
+    build:
+      context: ../..
+      dockerfile: Dockerfile.vite
+    container_name: vite-dev
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:8080
+    volumes:
+      - ./vite-app:/app
+      - /app/node_modules
+    command: ["npm", "run", "dev"]
+
+  # Backend Services
+  node-api:
+    build:
+      context: ../..
+      dockerfile: Dockerfile.node
+    container_name: node-api
+    ports:
+      - "3002:3002"
+    environment:
+      - DB_HOST=postgres
+      - REDIS_HOST=redis
+      - NODE_ENV=production
+    depends_on:
+      - postgres
+      - redis
+
+  python-microservice:
+    build:
+      context: ../..
+      dockerfile: Dockerfile.python
+    container_name: python-ms
+    ports:
+      - "8001:8001"
+    environment:
+      - DATABASE_URL=postgresql://user:pass@postgres:5432/quantumdb
+    command: ["uvicorn", "python_api:app", "--host", "0.0.0.0", "--port", "8001"]
+
+  go-service:
+    build:
+      context: ../..
+      dockerfile: Dockerfile.go
+    container_name: go-service
+    ports:
+      - "8081:8081"
+    environment:
+      - GOPATH=/go
+    command: ["./main"]
+
+  # Database & Cache
+  postgres:
+    image: postgres:15-alpine
+    container_name: quantum-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=quantum_user
+      - POSTGRES_PASSWORD=quantum_pass
+      - POSTGRES_DB=quantum_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U quantum_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: quantum-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: ["redis-server", "--appendonly", "yes"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Monitoring & Observability
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3003:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+
+  # CI/CD & Automation
+  jenkins:
+    image: jenkins/jenkins:lts-jdk17
+    container_name: jenkins
+    ports:
+      - "8082:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+
+  # Message Queue
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  # Vector Database for AI
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+  jenkins_home:
+  rabbitmq_data:
+  qdrant_data:
+
+networks:
+  default:
+    name: quantum-network
+    driver: bridge
