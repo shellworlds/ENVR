@@ -1,35 +1,29 @@
-# ENVR: Enterprise Quantum Computing Environment
+# ENVR9 - Building Survey System
 
-A comprehensive quantum computing development environment with integrated code quality tools.
-
-## Features
-- Quantum algorithms with Qiskit
-- Full-stack code quality toolchain
-- CI/CD integration
-- Multi-language support
-
-## Tools Showcased
-- **SonarQube**: Static analysis with code smell detection
-- **ESLint/Prettier**: JavaScript/TypeScript linting and formatting
-- **Black**: Python code formatting
-- **JSCodeshift**: Large-scale JavaScript refactoring
-- **Roslynator**: C# refactoring tools
-- **ReSharper**: .NET productivity tool
-- **Coverity**: Security and bug detection
+## GitHub Branch: ENVR9
+Repository: https://github.com/shellworlds/ENVR/tree/ENVR9
 
 ## Installation
-```bash
-pip install -r requirements.txt
-Project Structure
-src/quantum_algorithms/ - Quantum algorithm implementations
+Clone repository
+git clone -b ENVR9 https://github.com/shellworlds/ENVR.git
+cd ENVR/ENVR9
 
-src/quantum_applications/ - Practical quantum applications
+Run system check
+cd system_check && ./system_check.sh
 
-tests/ - Test suites
+Install and run
+cd ../backend
+pip install -r requirements_envr9.txt
+npm install
 
-notebooks/ - Jupyter notebooks
+Start services
+python fastapi_server.py &
+node server.js &
 
-docs/ - Documentation
+## API Endpoints
+FastAPI: http://localhost:8000/docs
+Node.js: http://localhost:3000
+Go: http://localhost:8081
 
-License
-MIT
+## Dashboard
+Open frontend/dashboard.html in browser.
