@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLK8 Problem Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            border-bottom: 2px solid #007acc;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            background: #f9f9f9;
+        }
+        .language-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .language-item {
+            padding: 10px;
+            background: #e3f2fd;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .result {
+            background: #e8f5e9;
+            padding: 15px;
+            border-left: 4px solid #4caf50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>SLK8 Problem: Support of M = ℚ/ℤ</h1>
+            <p>Multi-language implementation and analysis</p>
+        </div>
+        
+        <div class="card">
+            <h2>Problem Statement</h2>
+            <p>Let ℤ be the ring of integers, ℚ the rational numbers, and set M := ℚ/ℤ. 
+            Find the support Supp(M), and show that it's not Zariski closed.</p>
+        </div>
+        
+        <div class="card">
+            <h2>Mathematical Result</h2>
+            <div class="result">
+                <p><strong>Support:</strong> Supp(M) = { (p) | p is prime }</p>
+                <p><strong>Zariski Closed:</strong> No</p>
+                <p><strong>Reason:</strong> Infinite set of nonzero primes, not finite and not whole space</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Implemented Languages</h2>
+            <div class="language-grid" id="languages">
+                <!-- Filled by JavaScript -->
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>System Information</h2>
+            <div id="sysinfo">Loading...</div>
+        </div>
+    </div>
+
+    <script>
+        // Languages list
+        const languages = [
+            'Python', 'JavaScript', 'TypeScript', 'Java', 'C++', 'Go', 'Rust',
+            'Shell', 'HTML/CSS', 'React', 'Next.js', 'Vue', 'Svelte', 'Kotlin',
+            'Swift', 'PHP', 'Ruby', 'Scala'
+        ];
+        
+        // Populate languages grid
+        const grid = document.getElementById('languages');
+        languages.forEach(lang => {
+            const div = document.createElement('div');
+            div.className = 'language-item';
+            div.textContent = lang;
+            grid.appendChild(div);
+        });
+        
+        // System info
+        document.getElementById('sysinfo').innerHTML = `
+            <p>Browser: ${navigator.userAgent}</p>
+            <p>Platform: ${navigator.platform}</p>
+            <p>Languages: ${navigator.languages.join(', ')}</p>
+            <p>Date: ${new Date().toLocaleString()}</p>
+        `;
+    </script>
+</body>
+</html>

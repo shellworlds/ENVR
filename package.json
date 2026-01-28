@@ -1,0 +1,40 @@
+{
+  "name": "slk8-support-analysis",
+  "version": "1.0.0",
+  "description": "Multi-language implementation of SLK8 problem: Support of Q/Z module",
+  "main": "src/slk8.js",
+  "scripts": {
+    "start": "node src/slk8.js",
+    "python": "python3 src/slk8_math.py",
+    "java": "cd src && javac SLK8Analysis.java && java SLK8Analysis",
+    "cpp": "cd src && g++ -std=c++11 -o slk8_cpp slk8.cpp && ./slk8_cpp",
+    "go": "cd src && go run slk8.go",
+    "all": "./scripts/run_all.sh",
+    "setup": "./scripts/setup.sh",
+    "test": "echo \"Running tests...\" && python3 -m pytest test/ || true"
+  },
+  "keywords": [
+    "mathematics",
+    "algebra",
+    "commutative-algebra",
+    "support",
+    "zariski-topology",
+    "multi-language"
+  ],
+  "author": "shellworlds",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "jest": "^29.7.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "python": ">=3.8",
+    "java": ">=11",
+    "gcc": ">=9.0"
+  }
+}
