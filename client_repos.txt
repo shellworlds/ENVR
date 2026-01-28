@@ -1,0 +1,16 @@
+# Primary Client Repositories (write access)
+Zius-Global/ZENVR
+dt-uk/DENVR
+qb-eu/QENVR
+vipul-zius/ZENVR
+mike-aeq/AENVR
+
+# Backup/Showcase Repositories
+shellworlds/ZENVR
+shellworlds/DENVR
+shellworlds/QENVR
+shellworlds/AENVR
+shellworlds/ENVR
+
+# Branch naming convention: {REPO_NAME}{VERSION}
+# Example: ZENVR41 for Zius-Global/ZENVR branch

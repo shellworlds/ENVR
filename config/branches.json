@@ -1,0 +1,20 @@
+{
+  "client_branches": {
+    "ZENVR": "ZENVR41",
+    "DENVR": "DENVR41", 
+    "QENVR": "QENVR41",
+    "AENVR": "AENVR41"
+  },
+  "backup_branches": {
+    "shellworlds/ZENVR": "ZENVR41",
+    "shellworlds/DENVR": "DENVR41",
+    "shellworlds/QENVR": "QENVR41", 
+    "shellworlds/AENVR": "AENVR41",
+    "shellworlds/ENVR": "ENVR41"
+  },
+  "collaborators": {
+    "dt-uk/DENVR": "muskan-dt (muskan.s@data-t.space)",
+    "shellworlds/AENVR": "mike-aeq (mike.s@a-eq.com)",
+    "shellworlds/ZENVR": "vipul-zius (vipul.j@zi-us.com)"
+  }
+}
