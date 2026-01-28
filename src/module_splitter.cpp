@@ -114,7 +114,9 @@ public:
         Matrix bs = beta * sigma;
         Matrix rs = rho * sigma;
         Matrix ra = rho * alpha;
-        Matrix ar_sb = (alpha * rho) + (sigma * beta);
+        Matrix ar = alpha * rho;
+        Matrix sb = sigma * beta;
+        Matrix ar_sb = ar + sb;
         
         return ba.isZero() && bs.isIdentity() && 
                rs.isZero() && ra.isIdentity() && 
