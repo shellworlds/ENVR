@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module Splitting Theorem Visualization</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.0.0/dist/tf.min.js"></script>
+    <style>
+        body { margin: 0; font-family: Arial, sans-serif; }
+        #container { width: 100%; height: 100vh; display: flex; }
+        #visualization { flex: 3; }
+        #controls { flex: 1; padding: 20px; background: #f5f5f5; }
+        .control-group { margin-bottom: 20px; }
+        input[type="range"] { width: 100%; }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="visualization"></div>
+        <div id="controls">
+            <h2>Module Splitting Theorem</h2>
+            <p>Visualization of M = L ⊕ N decomposition</p>
+            
+            <div class="control-group">
+                <label>L Dimension: <span id="l-dim">2</span></label>
+                <input type="range" id="l-slider" min="1" max="5" value="2">
+            </div>
+            
+            <div class="control-group">
+                <label>N Dimension: <span id="n-dim">3</span></label>
+                <input type="range" id="n-slider" min="1" max="5" value="3">
+            </div>
+            
+            <div class="control-group">
+                <button id="verify-btn">Verify Theorem</button>
+                <div id="results"></div>
+            </div>
+            
+            <div class="control-group">
+                <h3>Theorem Conditions</h3>
+                <ul id="conditions">
+                    <li>βα = 0: <span class="status">❓</span></li>
+                    <li>βσ = 1: <span class="status">❓</span></li>
+                    <li>ρσ = 0: <span class="status">❓</span></li>
+                    <li>ρα = 1: <span class="status">❓</span></li>
+                    <li>αρ + σβ = 1: <span class="status">❓</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        class ModuleSplitter {
+            constructor(lDim, nDim) {
+                this.lDim = lDim;
+                this.nDim = nDim;
+                this.mDim = lDim + nDim;
+            }
+            
+            createAlpha() {
+                const alpha = Array(this.mDim).fill().map(() => Array(this.lDim).fill(0));
+                for (let i = 0; i < this.lDim; i++) alpha[i][i] = 1;
+                return alpha;
+            }
+            
+            createBeta() {
+                const beta = Array(this.nDim).fill().map(() => Array(this.mDim).fill(0));
+                for (let i = 0; i < this.nDim; i++) beta[i][this.lDim + i] = 1;
+                return beta;
+            }
+            
+            createSigma() {
+                const sigma = Array(this.mDim).fill().map(() => Array(this.nDim).fill(0));
+                for (let i = 0; i < this.nDim; i++) sigma[this.lDim + i][i] = 1;
+                return sigma;
+            }
+            
+            createRho() {
+                const rho = Array(this.lDim).fill().map(() => Array(this.mDim).fill(0));
+                for (let i = 0; i < this.lDim; i++) rho[i][i] = 1;
+                return rho;
+            }
+            
+            multiply(A, B) {
+                const rowsA = A.length, colsA = A[0].length;
+                const rowsB = B.length, colsB = B[0].length;
+                if (colsA !== rowsB) throw new Error('Invalid dimensions');
+                
+                const result = Array(rowsA).fill().map(() => Array(colsB).fill(0));
+                for (let i = 0; i < rowsA; i++) {
+                    for (let j = 0; j < colsB; j++) {
+                        let sum = 0;
+                        for (let k = 0; k < colsA; k++) {
+                            sum += A[i][k] * B[k][j];
+                        }
+                        result[i][j] = sum;
+                    }
+                }
+                return result;
+            }
+            
+            add(A, B) {
+                const rows = A.length, cols = A[0].length;
+                const result = Array(rows).fill().map(() => Array(cols).fill(0));
+                for (let i = 0; i < rows; i++) {
+                    for (let j = 0; j < cols; j++) {
+                        result[i][j] = A[i][j] + B[i][j];
+                    }
+                }
+                return result;
+            }
+            
+            isZero(matrix, tolerance = 1e-10) {
+                return matrix.every(row => 
+                    row.every(val => Math.abs(val) < tolerance)
+                );
+            }
+            
+            isIdentity(matrix, tolerance = 1e-10) {
+                if (matrix.length !== matrix[0].length) return false;
+                for (let i = 0; i < matrix.length; i++) {
+                    for (let j = 0; j < matrix.length; j++) {
+                        const expected = i === j ? 1 : 0;
+                        if (Math.abs(matrix[i][j] - expected) > tolerance) return false;
+                    }
+                }
+                return true;
+            }
+            
+            verifyTheorem() {
+                const alpha = this.createAlpha();
+                const beta = this.createBeta();
+                const sigma = this.createSigma();
+                const rho = this.createRho();
+                
+                const ba = this.multiply(beta, alpha);
+                const bs = this.multiply(beta, sigma);
+                const rs = this.multiply(rho, sigma);
+                const ra = this.multiply(rho, alpha);
+                const ar = this.multiply(alpha, rho);
+                const sb = this.multiply(sigma, beta);
+                const arPlusSb = this.add(ar, sb);
+                
+                return [
+                    this.isZero(ba),
+                    this.isIdentity(bs),
+                    this.isZero(rs),
+                    this.isIdentity(ra),
+                    this.isIdentity(arPlusSb)
+                ];
+            }
+        }
+        
+        // UI Interaction
+        document.getElementById('l-slider').addEventListener('input', function() {
+            document.getElementById('l-dim').textContent = this.value;
+        });
+        
+        document.getElementById('n-slider').addEventListener('input', function() {
+            document.getElementById('n-dim').textContent = this.value;
+        });
+        
+        document.getElementById('verify-btn').addEventListener('click', function() {
+            const lDim = parseInt(document.getElementById('l-slider').value);
+            const nDim = parseInt(document.getElementById('n-slider').value);
+            
+            const splitter = new ModuleSplitter(lDim, nDim);
+            const results = splitter.verifyTheorem();
+            const statusElements = document.querySelectorAll('.status');
+            
+            results.forEach((result, index) => {
+                statusElements[index].textContent = result ? '✓' : '✗';
+                statusElements[index].style.color = result ? 'green' : 'red';
+            });
+            
+            const allTrue = results.every(r => r);
+            document.getElementById('results').innerHTML = allTrue 
+                ? '<p style="color: green;">✓ Theorem verified: M = L ⊕ N</p>'
+                : '<p style="color: red;">✗ Theorem conditions failed</p>';
+        });
+        
+        // Initialize visualization
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(document.getElementById('visualization').offsetWidth, 
+                        document.getElementById('visualization').offsetHeight);
+        document.getElementById('visualization').appendChild(renderer.domElement);
+        
+        // Initial verification
+        document.getElementById('verify-btn').click();
+    </script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+{
+  "name": "envr-module-splitter",
+  "version": "1.0.0",
+  "description": "Module Splitting Theorem Implementation in Multiple Languages",
+  "main": "src/module_splitter.js",
+  "scripts": {
+    "start": "node src/module_splitter.js",
+    "test": "jest",
+    "build": "node scripts/build.js",
+    "python": "python3 src/module_splitter.py",
+    "cpp": "g++ -std=c++11 -o bin/module_splitter src/module_splitter.cpp && ./bin/module_splitter",
+    "java": "javac -d bin src/ModuleSplitter.java && java -cp bin com.envr.modulesplitter.ModuleSplitter",
+    "go": "go run src/module_splitter.go"
+  },
+  "keywords": [
+    "module",
+    "splitting",
+    "theorem",
+    "mathematics",
+    "algebra",
+    "envr"
+  ],
+  "author": "shellworlds",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "webpack": "^5.88.2"
+  }
+}
