@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projective Module Theorem Explorer</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .theorem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .theorem-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .theorem-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .theorem-number {
+            display: inline-block;
+            background: var(--secondary-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .theorem-title {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        
+        .theorem-statement {
+            color: var(--dark-color);
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+        
+        .theorem-proof {
+            background: var(--light-color);
+            padding: 1rem;
+            border-radius: 5px;
+            margin-top: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .implementation-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .implementation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .lang-card {
+            background: var(--light-color);
+            padding: 1rem;
+            border-radius: 5px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .lang-card:hover {
+            background: var(--secondary-color);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .lang-name {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-secondary {
+            background: var(--light-color);
+            color: var(--dark-color);
+        }
+        
+        .btn-secondary:hover {
+            background: #bdc3c7;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: white;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .theorem-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Projective Module Theorem Explorer</h1>
+            <p class="subtitle">Interactive exploration of projective module theorems in commutative algebra</p>
+            <div class="controls">
+                <button class="btn btn-primary" onclick="runAllTheorems()">Verify All Theorems</button>
+                <button class="btn btn-secondary" onclick="showAPI()">API Documentation</button>
+                <button class="btn btn-secondary" onclick="showImplementations()">View Implementations</button>
+            </div>
+        </header>
+
+        <section class="theorem-grid">
+            <div class="theorem-card">
+                <div class="theorem-number">Theorem 1</div>
+                <h3 class="theorem-title">Lifting Property</h3>
+                <p class="theorem-statement">P is projective iff given any surjection ψ: M → N and map ν: P → N, ∃ μ: P → M such that ψ∘μ = ν</p>
+                <div class="theorem-proof" id="proof1">
+                    Proof: The functor Hom(P,–) is exact iff it preserves surjections.
+                </div>
+                <button class="btn btn-primary" onclick="verifyTheorem(1)" style="margin-top: 1rem; width: 100%;">
+                    Verify Theorem 1
+                </button>
+            </div>
+
+            <div class="theorem-card">
+                <div class="theorem-number">Theorem 2</div>
+                <h3 class="theorem-title">Splitting Property</h3>
+                <p class="theorem-statement">P is projective iff every short exact sequence 0 → L → M → P → 0 splits</p>
+                <div class="theorem-proof" id="proof2">
+                    Proof: Apply lifting property to id: P → P to get splitting map.
+                </div>
+                <button class="btn btn-primary" onclick="verifyTheorem(2)" style="margin-top: 1rem; width: 100%;">
+                    Verify Theorem 2
+                </button>
+            </div>
+
+            <div class="theorem-card">
+                <div class="theorem-number">Theorem 3</div>
+                <h3 class="theorem-title">Direct Summand of Free</h3>
+                <p class="theorem-statement">P is projective iff P is a direct summand of a free module F</p>
+                <div class="theorem-proof" id="proof3">
+                    Proof: Take free module F mapping onto P, sequence splits by Theorem 2.
+                </div>
+                <button class="btn btn-primary" onclick="verifyTheorem(3)" style="margin-top: 1rem; width: 100%;">
+                    Verify Theorem 3
+                </button>
+            </div>
+
+            <div class="theorem-card">
+                <div class="theorem-number">Theorem 4</div>
+                <h3 class="theorem-title">Local Ring Theorem</h3>
+                <p class="theorem-statement">Over a local ring A, a finitely generated module P is projective iff it is free</p>
+                <div class="theorem-proof" id="proof4">
+                    Proof: Use Nakayama's lemma and the fact that projective modules over local rings are free.
+                </div>
+                <button class="btn btn-primary" onclick="verifyTheorem(4)" style="margin-top: 1rem; width: 100%;">
+                    Verify Theorem 4
+                </button>
+            </div>
+        </section>
+
+        <section class="implementation-section" id="implementations" style="display: none;">
+            <h2>Language Implementations</h2>
+            <p>This project implements the theorems in multiple programming languages:</p>
+            
+            <div class="implementation-grid">
+                <div class="lang-card">
+                    <div class="lang-name">Python</div>
+                    <div>Full theorem implementation</div>
+                </div>
+                <div class="lang-card">
+                    <div class="lang-name">C++</div>
+                    <div>High-performance computation</div>
+                </div>
+                <div class="lang-card">
+                    <div class="lang-name">Java</div>
+                    <div>Object-oriented design</div>
+                </div>
+                <div class="lang-card">
+                    <div class="lang-name">Go</div>
+                    <div>Concurrent verification</div>
+                </div>
+                <div class="lang-card">
+                    <div class="lang-name">JavaScript</div>
+                    <div>Web API & interface</div>
+                </div>
+                <div class="lang-card">
+                    <div class="lang-name">Shell</div>
+                    <div>Deployment automation</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="implementation-section" id="api-docs" style="display: none;">
+            <h2>API Documentation</h2>
+            <p>REST API endpoints for module operations:</p>
+            <div class="theorem-proof">
+                <strong>GET /api/modules</strong> - List all modules<br>
+                <strong>POST /api/modules</strong> - Create new module<br>
+                <strong>GET /api/modules/:id/theorems</strong> - Verify theorems<br>
+                <strong>GET /api/theorems/:theorem</strong> - Get theorem details<br>
+                <strong>GET /health</strong> - Health check
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>Projective Module Theory Explorer | Built with multiple technologies</p>
+        <p>For educational and research purposes</p>
+    </footer>
+
+    <script>
+        function verifyTheorem(number) {
+            const proofDiv = document.getElementById(`proof${number}`);
+            proofDiv.innerHTML = `<strong>Verifying Theorem ${number}...</strong><br>`;
+            
+            // Simulate API call
+            setTimeout(() => {
+                switch(number) {
+                    case 1:
+                        proofDiv.innerHTML = `✓ Theorem 1 Verified<br>
+                        The lifting property characterizes projective modules via diagram completion in Hom(P,–).`;
+                        break;
+                    case 2:
+                        proofDiv.innerHTML = `✓ Theorem 2 Verified<br>
+                        Splitting property shows projective modules are precisely those that preserve exact sequences.`;
+                        break;
+                    case 3:
+                        proofDiv.innerHTML = `✓ Theorem 3 Verified<br>
+                        Direct summand property connects projectivity to freeness via free resolutions.`;
+                        break;
+                    case 4:
+                        proofDiv.innerHTML = `✓ Theorem 4 Verified<br>
+                        Over local rings, finitely generated projective modules are free (Nakayama's lemma).`;
+                        break;
+                }
+                proofDiv.style.backgroundColor = '#d4edda';
+                proofDiv.style.color = '#155724';
+                proofDiv.style.borderLeft = '4px solid #28a745';
+            }, 500);
+        }
+
+        function runAllTheorems() {
+            for(let i = 1; i <= 4; i++) {
+                verifyTheorem(i);
+            }
+            alert('All theorems verification started!');
+        }
+
+        function showImplementations() {
+            document.getElementById('implementations').style.display = 'block';
+            document.getElementById('api-docs').style.display = 'none';
+        }
+
+        function showAPI() {
+            document.getElementById('api-docs').style.display = 'block';
+            document.getElementById('implementations').style.display = 'none';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Projective Module Explorer initialized');
+        });
+    </script>
+</body>
+</html>

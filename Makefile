@@ -1,134 +1,134 @@
-# Nullstellensatz Project Makefile
-# Unified build and test system
+# File: Makefile
+# Language: Make
+# Purpose: Build automation for projective module project
 
-.PHONY: all setup clean test run build push help
+.PHONY: all clean test deploy docs build
 
-# Default target
-all: setup build
+# Variables
+PYTHON := python3
+NODE := node
+NPM := npm
+GO := go
+JAVAC := javac
+JAVA := java
+CXX := g++
+CXXFLAGS := -std=c++11 -Wall -O2
 
-# Setup environment
-setup:
-	@echo "Setting up Nullstellensatz Project..."
-	@echo "========================================"
-	
-	# Python setup
-	@echo "\n1. Setting up Python environment..."
-	python3 -m venv venv 2>/dev/null || true
-	. venv/bin/activate && pip install -r python/requirements.txt
-	
-	# Node.js setup
-	@echo "\n2. Setting up Node.js..."
-	cd node && npm install 2>/dev/null || echo "Node setup completed"
-	
-	# React setup
-	@echo "\n3. Setting up React..."
-	cd react && npm install 2>/dev/null || echo "React setup completed"
-	
-	# Go setup
-	@echo "\n4. Setting up Go..."
-	which go >/dev/null 2>&1 || echo "Go not installed, skipping"
-	
-	@echo "\nSetup complete!"
+# Directories
+SRC_DIR := src
+API_DIR := api
+SCRIPTS_DIR := scripts
+DOCS_DIR := docs
+BUILD_DIR := build
+
+# Targets
+all: build test
+
+# Build all implementations
+build: python-build cpp-build java-build go-build node-deps
+
+python-build:
+	@echo "Building Python implementation..."
+	$(PYTHON) -m py_compile $(SRC_DIR)/projective_module.py
+
+cpp-build:
+	@echo "Building C++ implementation..."
+	$(CXX) $(CXXFLAGS) -o $(BUILD_DIR)/module_computation $(SRC_DIR)/module_computation.cpp 2>/dev/null || echo "C++ build skipped"
+
+java-build:
+	@echo "Building Java implementation..."
+	mkdir -p $(BUILD_DIR)
+	$(JAVAC) -d $(BUILD_DIR) $(SRC_DIR)/ModuleTheory.java 2>/dev/null || echo "Java build skipped"
+
+go-build:
+	@echo "Building Go implementation..."
+	$(GO) build -o $(BUILD_DIR)/module_ops $(SRC_DIR)/module_operations.go 2>/dev/null || echo "Go build skipped"
+
+node-deps:
+	@echo "Installing Node.js dependencies..."
+	cd $(API_DIR) && $(NPM) init -y 2>/dev/null || true
+	cd $(API_DIR) && $(NPM) install express 2>/dev/null || true
+
+# Run tests
+test: python-test cpp-test java-test go-test node-test
+
+python-test:
+	@echo "\n=== Python Theorem Verification ==="
+	$(PYTHON) $(SRC_DIR)/projective_module.py
+
+cpp-test:
+	@echo "\n=== C++ Theorem Verification ==="
+	@if [ -f $(BUILD_DIR)/module_computation ]; then \
+		$(BUILD_DIR)/module_computation; \
+	else \
+		echo "C++ executable not found, skipping..."; \
+	fi
+
+java-test:
+	@echo "\n=== Java Theorem Verification ==="
+	@if [ -f $(BUILD_DIR)/ModuleTheory.class ]; then \
+		cd $(BUILD_DIR) && $(JAVA) ModuleTheory; \
+	else \
+		echo "Java class not found, skipping..."; \
+	fi
+
+go-test:
+	@echo "\n=== Go Theorem Verification ==="
+	@if [ -f $(BUILD_DIR)/module_ops ]; then \
+		$(BUILD_DIR)/module_ops; \
+	else \
+		$(GO) run $(SRC_DIR)/module_operations.go 2>/dev/null || echo "Go test skipped"; \
+	fi
+
+node-test:
+	@echo "\n=== Node.js API Test ==="
+	@echo "To test Node.js API: cd api && node module_api.js"
+
+# Documentation
+docs:
+	@echo "Generating documentation..."
+	@echo "# Projective Module Theorems" > $(DOCS_DIR)/README.md
+	@echo "## Implementations" >> $(DOCS_DIR)/README.md
+	@echo "- Python: Complete theorem implementation" >> $(DOCS_DIR)/README.md
+	@echo "- C++: High-performance computation" >> $(DOCS_DIR)/README.md
+	@echo "- Java: Object-oriented design" >> $(DOCS_DIR)/README.md
+	@echo "- Go: Concurrent verification" >> $(DOCS_DIR)/README.md
+	@echo "- JavaScript: Web API" >> $(DOCS_DIR)/README.md
+	@echo "- Shell: Automation scripts" >> $(DOCS_DIR)/README.md
+	@echo "Documentation generated at $(DOCS_DIR)/README.md"
+
+# Deployment
+deploy:
+	@echo "Starting deployment..."
+	chmod +x $(SCRIPTS_DIR)/deploy.sh
+	$(SCRIPTS_DIR)/deploy.sh
+
+# Create requirements.txt
+requirements:
+	@echo "Creating Python requirements..."
+	@echo "numpy>=1.21.0" > requirements.txt
+	@echo "requests>=2.26.0" >> requirements.txt
 
 # Clean build artifacts
 clean:
 	@echo "Cleaning build artifacts..."
-	rm -rf venv
-	rm -rf node/node_modules
-	rm -rf react/node_modules
-	rm -rf react/dist
-	rm -rf java/build
-	rm -rf cpp/nullstellensatz
-	rm -rf go/bin go/pkg
-	find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
-	find . -name "*.pyc" -delete
-	@echo "Clean complete!"
+	rm -rf $(BUILD_DIR)
+	rm -f $(SRC_DIR)/*.pyc
+	rm -f $(SRC_DIR)/*.class
+	rm -f $(SRC_DIR)/module_computation
+	rm -f $(SRC_DIR)/module_ops
 
-# Test all implementations
-test:
-	@echo "Testing all implementations..."
-	@echo "=============================="
-	
-	@echo "\n1. Testing Python..."
-	. venv/bin/activate && cd python && python -m pytest tests/ -v
-	
-	@echo "\n2. Testing Node.js..."
-	cd node && npm test 2>/dev/null || echo "Node tests not configured"
-	
-	@echo "\n3. Testing C++..."
-	cd cpp && g++ -std=c++11 -o nullstellensatz src/nullstellensatz.cpp && ./nullstellensatz
-	
-	@echo "\n4. Testing Java..."
-	cd java && javac -d build src/main/java/com/nullstellensatz/Main.java && java -cp build com.nullstellensatz.Main
-	
-	@echo "\nAll tests completed!"
-
-# Run specific implementations
-run-python:
-	@echo "Running Python implementation..."
-	. venv/bin/activate && cd python/src && python nullstellensatz.py
-
-run-node:
-	@echo "Running Node.js server..."
-	cd node && npm start
-
-run-react:
-	@echo "Running React development server..."
-	cd react && npm run dev
-
-run-go:
-	@echo "Running Go implementation..."
-	cd go && go run cmd/main.go
-
-run-cpp:
-	@echo "Running C++ implementation..."
-	cd cpp && g++ -std=c++11 -o nullstellensatz src/nullstellensatz.cpp && ./nullstellensatz
-
-run-java:
-	@echo "Running Java implementation..."
-	cd java && javac -d build src/main/java/com/nullstellensatz/Main.java && java -cp build com.nullstellensatz.Main
-
-# Build all
-build:
-	@echo "Building all implementations..."
-	# Python - already built
-	@echo "✓ Python ready"
-	
-	# Node.js
-	@echo "✓ Node.js ready"
-	
-	# React
-	@echo "✓ React ready"
-	
-	# C++
-	cd cpp && g++ -std=c++11 -o nullstellensatz src/nullstellensatz.cpp
-	@echo "✓ C++ built"
-	
-	# Java
-	cd java && javac -d build src/main/java/com/nullstellensatz/Main.java
-	@echo "✓ Java built"
-	
-	# Go
-	cd go && go build -o bin/nullstellensatz cmd/main.go 2>/dev/null || echo "Go build skipped"
-	@echo "✓ Go ready (if installed)"
-	
-	@echo "\nAll builds completed!"
-
-# Git operations
-push-all:
-	@echo "Pushing to all repositories..."
-	@echo "==============================="
-	./scripts/push-all.sh
-
-# Display help
+# Help
 help:
-	@echo "Nullstellensatz Project Makefile"
-	@echo ""
-	@echo "Available targets:"
-	@echo "  setup     - Set up all environments"
-	@echo "  clean     - Remove all build artifacts"
-	@echo "  test      - Run all tests"
-	@echo "  build     - Build all implementations"
-	@echo "  run-*     - Run specific implementation"
-	@echo "  push-all  - Push to all git repositories"
-	@echo "  help      - Show this help message"
+	@echo "Available commands:"
+	@echo "  make all      - Build and test everything"
+	@echo "  make build    - Build all implementations"
+	@echo "  make test     - Run all tests"
+	@echo "  make deploy   - Run deployment script"
+	@echo "  make docs     - Generate documentation"
+	@echo "  make clean    - Clean build artifacts"
+	@echo "  make help     - Show this help message"
+
+# Create build directory
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)

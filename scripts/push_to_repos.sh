@@ -1,20 +1,3 @@
-
-Python dependencies for projective module project
-numpy>=1.21.0
-requests>=2.26.0
-flask>=2.0.0
-fastapi>=0.68.0
-uvicorn>=0.15.0
-pydantic>=1.8.0
-sympy>=1.9.0
-pytest>=6.2.5
-
-text
-
-Now I'll create a script to copy these files to all client repositories:
-
-```bash
-cat > scripts/push_to_repos.sh << 'EOF'
 #!/bin/bash
 # File: push_to_repos.sh
 # Purpose: Push project files to all client repositories
@@ -40,6 +23,16 @@ declare -A branch_names=(
     ["shellworlds_ENVR"]="ENVR43"
 )
 
+# Backup repositories use same branch names
+declare -A backup_branch_names=(
+    ["shellworlds_ZENVR"]="ZENVR43"
+    ["shellworlds_DENVR"]="DENVR43"
+    ["shellworlds_QENVR"]="QENVR43"
+    ["shellworlds_AENVR"]="AENVR43"
+    ["shellworlds_ENVR"]="ENVR43"
+    ["shellworlds_BENVR"]="BENVR43"
+)
+
 # Function to push to a repository
 push_to_repo() {
     local repo_dir=$1
@@ -61,17 +54,30 @@ push_to_repo() {
     # Check if we're in a git repository
     if [ ! -d ".git" ]; then
         echo "Not a git repository: $repo_dir"
-        cd ..
+        cd "$PROJECT_ROOT"
         return 1
     fi
     
     # Create or switch to branch
     git checkout -b "$branch_name" 2>/dev/null || git checkout "$branch_name" 2>/dev/null
     
-    # Copy all project files (except git directory)
+    # Remove existing files (except .git)
+    echo "Cleaning repository..."
+    find . -maxdepth 1 ! -name '.git' ! -name '.' ! -name '..' -exec rm -rf {} + 2>/dev/null || true
+    
+    # Copy all project files
     echo "Copying project files..."
-    rsync -av --exclude='.git' --exclude='repositories' \
-          "$PROJECT_ROOT/" . 2>/dev/null || true
+    cp -r "$PROJECT_ROOT"/src . 2>/dev/null || true
+    cp -r "$PROJECT_ROOT"/api . 2>/dev/null || true
+    cp -r "$PROJECT_ROOT"/scripts . 2>/dev/null || true
+    cp -r "$PROJECT_ROOT"/docs . 2>/dev/null || true
+    cp -r "$PROJECT_ROOT"/config . 2>/dev/null || true
+    cp -r "$PROJECT_ROOT"/docker . 2>/dev/null || true
+    cp -r "$PROJECT_ROOT"/tests . 2>/dev/null || true
+    cp "$PROJECT_ROOT"/Makefile . 2>/dev/null || true
+    cp "$PROJECT_ROOT"/README.md . 2>/dev/null || true
+    cp "$PROJECT_ROOT"/requirements.txt . 2>/dev/null || true
+    cp "$PROJECT_ROOT"/branch_mapping.txt . 2>/dev/null || true
     
     # Remove the repositories directory if it was copied
     rm -rf repositories 2>/dev/null || true
@@ -117,7 +123,7 @@ push_to_repo() {
         echo "No changes to commit for $repo_display_name"
     fi
     
-    cd ..
+    cd "$PROJECT_ROOT"
 }
 
 # Push to client repositories

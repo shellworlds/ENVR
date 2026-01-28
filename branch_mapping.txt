@@ -1,0 +1,19 @@
+# Branch Mapping for Client Repositories
+# Format: Repository -> New Branch Name
+
+Zius-Global/ZENVR -> ZENVR43
+dt-uk/DENVR -> DENVR43
+qb-eu/QENVR -> QENVR43
+vipul-zius/ZENVR -> ZENVR43
+mike-aeq/AENVR -> AENVR43
+manav2341/BENVR -> BENVR43
+muskan-dt/DENVR -> DENVR43
+shellworlds/ENVR -> ENVR43
+
+# Backup repositories use same branches
+shellworlds/ZENVR -> ZENVR43
+shellworlds/DENVR -> DENVR43
+shellworlds/QENVR -> QENVR43
+shellworlds/AENVR -> AENVR43
+shellworlds/ENVR -> ENVR43
+shellworlds/BENVR -> BENVR43
