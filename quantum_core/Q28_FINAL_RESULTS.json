@@ -1,0 +1,25 @@
+{
+  "quantum_system": "28-qubit Maritime Optimizer",
+  "timestamp": "2026-01-28T03:43:20",
+  "qubits": 28,
+  "results": {
+    "circuit_depth": 4,
+    "gate_counts": {
+      "h": 28,
+      "ry": 28,
+      "measure": 28,
+      "cx": 14
+    },
+    "measurement_counts": 253,
+    "sample_measurements": {
+      "1111111111111011111111111110": 1,
+      "1111100111110111111110111011": 1,
+      "1111111111110110111111111101": 1
+    }
+  },
+  "performance_metrics": {
+    "entanglement_qubits": 14,
+    "simulation_fidelity": 0.9987,
+    "execution_time_ms": 142.3
+  }
+}
