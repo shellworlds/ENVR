@@ -1,0 +1,44 @@
+name: "SLK8 Project Board"
+description: "Project management board for SLK8 implementation"
+columns:
+  - name: "Backlog"
+    description: "Features and issues to be implemented"
+  - name: "In Progress"
+    description: "Currently being worked on"
+  - name: "Code Review"
+    description: "Ready for review"
+  - name: "Testing"
+    description: "Being tested"
+  - name: "Done"
+    description: "Completed items"
+
+workflows:
+  - name: "Standard Workflow"
+    rules:
+      - when: "issue.opened"
+        then:
+          - add_to_column: "Backlog"
+      - when: "issue.labeled"
+        if: "label.name == 'in-progress'"
+        then:
+          - move_to_column: "In Progress"
+      - when: "pull_request.opened"
+        then:
+          - add_to_column: "Code Review"
+      - when: "pull_request.merged"
+        then:
+          - move_to_column: "Done"
+
+automation:
+  - name: "Auto-add new issues"
+    on: "issues.opened"
+    actions:
+      - add_to_project:
+          project_name: "SLK8 Project Board"
+          column_name: "Backlog"
+  
+  - name: "Auto-close on merge"
+    on: "pull_request.merged"
+    actions:
+      - close_issue:
+          issue_number: "${{ pull_request.issue.number }}"
