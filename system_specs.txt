@@ -1,0 +1,13 @@
+System Specification Report
+===========================
+Machine: Lenovo ThinkPad
+OS: Ubuntu Linux
+RAM: 32GB
+Storage: 1TB SSD
+Architecture: x86_64
+Project: ENVR Module Splitter Implementation
+Created: $(date)
+Description:	Ubuntu 24.04.3 LTS
+x86_64
+RAM: 27Gi
+Storage: 937G
