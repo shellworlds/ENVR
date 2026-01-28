@@ -1,0 +1,50 @@
+name: Quantum CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, collab_* ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-quantum:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install qiskit qiskit-aer numpy matplotlib
+    
+    - name: Run quantum tests
+      run: |
+        cd quantum_core
+        python Q28_FINAL_WORKING.py
+        python CREATE_VISUALIZATIONS.py
+        
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: quantum-results
+        path: |
+          quantum_core/*.json
+          quantum_core/*.png
+        retention-days: 7
+    
+  notify-collaborators:
+    needs: test-quantum
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: Notify on PR
+      run: |
+        echo "PR #${{ github.event.pull_request.number }} by @${{ github.event.pull_request.user.login }}"
+        echo "Review requested from collaborators"
