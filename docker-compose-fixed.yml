@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  python-app:
+    build: .
+    container_name: slk8-python
+    command: python3 src/slk8_math.py
+    volumes:
+      - ./output:/app/output
+    networks:
+      - slk8-network
+
+  node-app:
+    build: .
+    container_name: slk8-node
+    command: node src/slk8.js
+    volumes:
+      - ./output:/app/output
+    networks:
+      - slk8-network
+
+  java-app:
+    build: .
+    container_name: slk8-java
+    command: bash -c "cd src && javac SLK8Analysis.java && java SLK8Analysis"
+    volumes:
+      - ./output:/app/output
+    networks:
+      - slk8-network
+
+  web-dashboard:
+    build: .
+    container_name: slk8-web
+    ports:
+      - "3001:3000"  # Changed from 3000:3000 to 3001:3000
+    command: npm start
+    volumes:
+      - ./src:/app/src
+    networks:
+      - slk8-network
+    depends_on:
+      - python-app
+      - node-app
+
+  runner:
+    build: .
+    container_name: slk8-runner
+    command: ./scripts/run_all.sh
+    volumes:
+      - ./output:/app/output
+    networks:
+      - slk8-network
+    depends_on:
+      - python-app
+      - node-app
+      - java-app
+
+networks:
+  slk8-network:
+    driver: bridge
