@@ -1,53 +1,97 @@
-.PHONY: all python java cpp go rust js web docs clean
+.PHONY: help setup install test clean deploy
 
-all: python java cpp go rust js web docs
+# Variables
+PYTHON=python3
+NODE=node
+NPM=npm
+PIP=pip
+VENV=venv
+REQUIREMENTS=requirements.txt
+
+help:
+	@echo "Quantum JV Platform - Makefile"
+	@echo ""
+	@echo "Available targets:"
+	@echo "  setup     - Setup development environment"
+	@echo "  install   - Install all dependencies"
+	@echo "  python    - Install Python dependencies"
+	@echo "  node      - Install Node.js dependencies"
+	@echo "  test      - Run tests"
+	@echo "  clean     - Clean build artifacts"
+	@echo "  run       - Run development server"
+	@echo "  deploy    - Deploy to production"
+	@echo "  docs      - Generate documentation"
+	@echo "  lint      - Run linting"
+
+setup:
+	@echo "Setting up development environment..."
+	chmod +x scripts/setup_environment.sh
+	./scripts/setup_environment.sh
+
+install: python node
+	@echo "All dependencies installed"
 
 python:
-	@echo "Running Python implementation..."
-	cd src/python && python3 module_theorem.py
+	@echo "Installing Python dependencies..."
+	if [ ! -d "$(VENV)" ]; then $(PYTHON) -m venv $(VENV); fi
+	. $(VENV)/bin/activate && $(PIP) install -r $(REQUIREMENTS)
 
-java:
-	@echo "Compiling Java..."
-	cd src/java && javac ModuleTheorem.java && java ModuleTheorem
+node:
+	@echo "Installing Node.js dependencies..."
+	cd src/react && $(NPM) install
+	cd src/node && $(NPM) install
 
-cpp:
-	@echo "Compiling C++..."
-	cd src/cpp && g++ -std=c++11 -o theorem module_theorem.cpp && ./theorem
+test:
+	@echo "Running tests..."
+	. $(VENV)/bin/activate && python -m pytest tests/ -v
+	cd src/node && $(NPM) test
 
-go:
-	@echo "Running Go..."
-	cd src/go && go run module_theorem.go
+run:
+	@echo "Starting development servers..."
+	@echo "1. Python API: http://localhost:8000"
+	@echo "2. React App: http://localhost:3000"
+	@echo "3. Documentation: http://localhost:8080"
+	. $(VENV)/bin/activate && python src/python/api_server.py &
+	cd src/react && $(NPM) start &
+	cd docs && python -m http.server 8080 &
 
-rust:
-	@echo "Compiling Rust..."
-	cd src/rust && rustc module_theorem.rs && ./module_theorem
+clean:
+	@echo "Cleaning build artifacts..."
+	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+	find . -type f -name "*.pyc" -delete
+	find . -type f -name "*.pyo" -delete
+	find . -type f -name "*.so" -delete
+	find . -type f -name "*.coverage" -delete
+	rm -rf build/ dist/ *.egg-info
+	rm -rf node_modules/ .next/ out/ dist/
 
-js:
-	@echo "Running TypeScript (requires ts-node)..."
-	@if command -v ts-node >/dev/null; then \
-		cd src/js && ts-node module-theorem.ts; \
-	else \
-		echo "ts-node not installed. Install with: npm install -g ts-node"; \
-	fi
-
-web:
-	@echo "Web implementations available in:"
-	@echo "  - web/react/    (React app)"
-	@echo "  - web/next/     (Next.js app)"
-	@echo "  - web/vite/     (Vite project)"
-	@echo "Run respective start commands"
+deploy:
+	@echo "Deploying to production..."
+	git push origin main
+	@echo "Deployment triggered"
 
 docs:
 	@echo "Generating documentation..."
-	@if command -v pdflatex >/dev/null; then \
-		cd docs && pdflatex theorem.tex; \
-	else \
-		echo "pdflatex not installed. Install texlive."; \
-	fi
-	@echo "HTML documentation: docs/theorem-explanation.html"
+	. $(VENV)/bin/activate && pdoc --html src/python --output-dir docs/api
+	@echo "Documentation generated in docs/api/"
 
-clean:
-	rm -f src/cpp/theorem
-	rm -f src/rust/module_theorem
-	rm -f src/java/*.class
-	rm -f docs/*.aux docs/*.log docs/*.out
+lint:
+	@echo "Running linting..."
+	. $(VENV)/bin/activate && black src/python/
+	. $(VENV)/bin/activate && flake8 src/python/
+	cd src/react && $(NPM) run lint
+	cd src/node && $(NPM) run lint
+
+# Client-specific targets
+client-setup:
+	@echo "Setting up client repositories..."
+	@echo "Run: ./scripts/setup_clients.sh"
+
+client-push:
+	@echo "Pushing to client repositories..."
+	@echo "Run: ./scripts/push_to_clients.sh"
+
+.PHONY: quantum-simulate
+quantum-simulate:
+	@echo "Running quantum simulation..."
+	. $(VENV)/bin/activate && python src/python/quantum_base.py

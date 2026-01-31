@@ -1,0 +1,27 @@
+title: Quantum JV Platform
+description: Multi-client quantum computing integration platform
+baseurl: "/ENVR"
+url: "https://shellworlds.github.io"
+
+theme: jekyll-theme-cayman
+
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+author:
+  name: shellworlds
+  email: quantum-platform@shellworlds.com
+
+repository: shellworlds/ENVR
+
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+  - scope:
+      path: "docs"
+    values:
+      layout: "docs"

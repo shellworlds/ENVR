@@ -1,0 +1,28 @@
+{
+  "client": "ENVR",
+  "repository": "shellworlds/ENVR",
+  "integration_date": "2026-01-31",
+  "quantum_modules": {
+    "python": {
+      "enabled": true,
+      "path": "../../src/python",
+      "entry_point": "quantum_base.py"
+    },
+    "react": {
+      "enabled": E == "Z" || E == "Q",
+      "path": "../../src/react",
+      "component": "QuantumComponent"
+    },
+    "node": {
+      "enabled": true,
+      "path": "../../src/node",
+      "api_endpoint": "/api/quantum"
+    }
+  },
+  "deployment": {
+    "platform": "github_actions",
+    "branch": "ENVR_integration",
+    "auto_merge": false,
+    "notify": ["ENVR@example.com"]
+  }
+}

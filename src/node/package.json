@@ -1,0 +1,43 @@
+{
+  "name": "quantum-jv-platform-server",
+  "version": "1.0.0",
+  "description": "Quantum JV Platform Node.js Server",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "test": "jest",
+    "lint": "eslint .",
+    "build": "echo 'Building server...'"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2",
+    "python-shell": "^5.0.0",
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.1",
+    "mongoose": "^7.5.0",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "jest": "^29.7.0",
+    "eslint": "^8.53.0",
+    "supertest": "^6.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "quantum",
+    "api",
+    "server",
+    "nodejs",
+    "express"
+  ],
+  "author": "shellworlds",
+  "license": "MIT"
+}
