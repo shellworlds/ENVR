@@ -1,0 +1,9 @@
+{
+  "name": "sn112ba-api",
+  "version": "1.0.0",
+  "description": "SN-112BA API stack",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
