@@ -1,0 +1,28 @@
+SN-112BA System Check - 2026-03-13T13:51:05+00:00
+--- Platform ---
+OS: Ubuntu 24.04.4 LTS (ubuntu 24.04)
+Kernel: 6.14.0-1020-oem
+Arch: x86_64
+Product: ThinkPad P14s Gen 5 AMD
+Vendor: LENOVO
+--- Memory ---
+               total        used        free      shared  buff/cache   available
+Mem:            27Gi       6.2Gi        13Gi       142Mi       8.3Gi        20Gi
+Swap:          8.2Gi          0B       8.2Gi
+--- Storage ---
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/nvme0n1p2  937G  194G  696G  22% /
+--- Python ---
+python3: Python 3.12.7
+--- Node ---
+node: v20.20.0
+npm: 10.8.2
+--- Go ---
+go: go version go1.22.2 linux/amd64
+--- Java ---
+java: openjdk version "21.0.10" 2026-01-20
+--- C++ (g++) ---
+g++: g++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0
+--- Git ---
+git: git version 2.43.0
+user: shelloworlds
