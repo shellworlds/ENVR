@@ -1,0 +1,21 @@
+ENVR System Report
+Generated: Fri Mar 20 01:31:34 PM UTC 2026
+OS: Ubuntu 24.04.4 LTS
+CPU: AMD Ryzen 7 PRO 8840HS w/ Radeon 780M Graphics
+RAM: 27.06 GB
+
+Tool Availability
+[OK] git
+[OK] gh
+[OK] python3
+[OK] pip3
+[OK] node
+[OK] npm
+[OK] java
+[OK] javac
+[OK] go
+[OK] gcc
+[OK] g++
+[OK] docker
+[OK] kubectl
+[MISS] qiskit
