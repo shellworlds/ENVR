@@ -1,36 +1,17 @@
 {
-  "name": "comm-algebra-theorem",
-  "version": "1.0.0",
-  "description": "Multi-language implementation of commutative algebra module theorem",
-  "main": "src/js/module-theorem.ts",
+  "name": "ae-kryptur-dashboard",
+  "version": "1.6.0",
   "scripts": {
-    "python": "python3 src/python/module_theorem.py",
-    "java": "cd src/java && javac ModuleTheorem.java && java ModuleTheorem",
-    "cpp": "cd src/cpp && g++ -std=c++11 -o theorem module_theorem.cpp && ./theorem",
-    "go": "cd src/go && go run module_theorem.go",
-    "rust": "cd src/rust && rustc module_theorem.rs && ./module_theorem",
-    "ts": "ts-node src/js/module-theorem.ts",
-    "explain": "./theorem-explainer.sh",
-    "build": "make all",
-    "test": "echo \"Run individual language tests\"",
-    "docs": "make docs"
-  },
-  "keywords": [
-    "commutative-algebra",
-    "mathematics",
-    "theorem",
-    "noetherian",
-    "module"
-  ],
-  "author": "shellworlds",
-  "license": "MIT",
-  "devDependencies": {
-    "@types/node": "^20.0.0",
-    "typescript": "^5.0.0"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "next": "^13.0.0"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.0.0",
+    "vite": "^5.0.0"
   }
 }
